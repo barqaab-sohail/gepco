@@ -5,16 +5,53 @@ import 'package:test/api/end_points.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:test/models/user_model.dart';
-import 'package:test/view/form_table.dart';
+import 'package:test/view/earthing_table_view.dart';
 
 class LoginController extends GetxController {
   late TextEditingController emailController, passwordController;
+  RxBool loading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+  }
+
+  void loginWithGetx() async {
+    loading.value = true;
+    try {
+      var url = Uri.parse(BaseApi.baseURL + EndPoints.login);
+      var response = await http.post(url, body: {
+        'email': emailController.value.text,
+        'password': passwordController.value.text
+      });
+      var data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        loading.value = false;
+        Get.snackbar(
+          'Login Sucessfull',
+          'Welcome',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        Get.to(() => EarthingTableView());
+      } else {
+        loading.value = false;
+        print(data.toString());
+        Get.snackbar(
+          'Login Failed',
+          data['message'],
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      loading.value = false;
+      Get.snackbar(
+        'Exception',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   Future<void> loginWithEmail({@required formkey}) async {
@@ -44,7 +81,7 @@ class LoginController extends GetxController {
         emailController.clear();
         passwordController.clear();
         print(loginUser.userName);
-        Get.to(() => FormTable());
+        Get.to(() => EarthingTableView());
         //Get.off(HomeScreen());
       } else {
         // Get.to(() => LoginScreen());

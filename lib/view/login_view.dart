@@ -54,8 +54,7 @@ class _LoginViewState extends State<LoginView> {
               ),
               const SizedBox(height: 10),
               FloatingActionButton(
-                onPressed: () =>
-                    {loginController.loginWithEmail(formkey: _formKey)},
+                onPressed: () => {loginController.loginWithGetx()},
                 child: Text('Login'),
                 backgroundColor: Colors.blue,
                 hoverColor: Colors.grey,
