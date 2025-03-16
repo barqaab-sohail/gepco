@@ -20,12 +20,18 @@ class LoginController extends GetxController {
 
   void loginWithGetx() async {
     loading.value = true;
+    var url1 = 'http://localhost/gepco_app/public/api/gepco/login';
+    var url2 = 'https://dummyjson.com/auth/login';
+
     try {
-      var url = Uri.parse(BaseApi.baseURL + EndPoints.login);
-      var response = await http.post(url, body: {
-        'email': emailController.value.text,
-        'password': passwordController.value.text
-      });
+      var url = Uri.parse(url1);
+      var response = await http.post(
+        url,
+        body: {
+          'email': emailController.value.text,
+          'password': passwordController.value.text
+        },
+      );
       var data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         loading.value = false;
@@ -51,6 +57,7 @@ class LoginController extends GetxController {
         e.toString(),
         snackPosition: SnackPosition.BOTTOM,
       );
+      print('Error details: ${e.toString()}');
     }
   }
 
